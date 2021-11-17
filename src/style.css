@@ -1,0 +1,18 @@
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+  border: 1px solid black;
+}
+
+.number {
+  font-size: 2rem;
+}
