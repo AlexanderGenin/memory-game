@@ -1,16 +1,19 @@
 .cards-container {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(6, 100px);
+  grid-template-rows: repeat(6, 100px);
 }
 
 .card {
-  width: 150px;
-  height: 150px;
+  transform: rotate3d(0);
+  width: 80px;
+  height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 1rem;
   border: 1px solid black;
+  transition: transform 0.3s linear 0.2s;
 }
 
 .number {

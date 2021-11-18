@@ -1,7 +1,26 @@
 import { ICard } from "../types";
 import { shuffle } from "../utils";
 
-const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
+const letters = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+];
 
 export function getCards(): ICard[] {
   return shuffle(
