@@ -26,6 +26,11 @@ export function getCards(): ICard[] {
   return shuffle(
     letters
       .concat(...letters)
-      .map((letter, i) => ({ id: i + 1, text: letter, open: false }))
+      .map((letter, i) => ({
+        id: i + 1,
+        text: letter,
+        open: false,
+        isDeleted: false,
+      }))
   );
 }

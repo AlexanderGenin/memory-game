@@ -2,6 +2,7 @@ export interface ICard {
   id: number;
   text: string;
   open: boolean;
+  isDeleted: boolean;
 }
 
 export interface ICardTimer {

@@ -12,20 +12,20 @@ const cardSlice = createSlice({
   name: "card",
   initialState,
   reducers: {
-    showCard(state, { payload }: PayloadAction<ICardTimer>) {
-      const { id, timer } = payload;
+    showCard(state, { payload: id }: PayloadAction<number>) {
       state.cards.find((card) => {
         if (id === card.id) card.open = true;
       });
-      state.cardTimers.push({ id, timer });
     },
     hideCard(state, { payload: id }: PayloadAction<number>) {
       state.cards.find((card) => {
         if (id === card.id) card.open = false;
       });
-      state.cardTimers = state.cardTimers.filter(
-        (cardTimer) => id !== cardTimer.id
-      );
+    },
+    deleteCard(state, { payload: id }: PayloadAction<number>) {
+      state.cards.find((card) => {
+        if (id === card.id) card.isDeleted = true;
+      });
     },
     updateTimer(state, { payload }: PayloadAction<ICardTimer>) {
       const { id, timer } = payload;
@@ -36,6 +36,15 @@ const cardSlice = createSlice({
         }
       });
     },
+    deleteTimer(state, { payload: id }: PayloadAction<number>) {
+      state.cardTimers = state.cardTimers.filter(
+        (cardTimer) => id !== cardTimer.id
+      );
+    },
+    addTimer(state, { payload }: PayloadAction<ICardTimer>) {
+      const { id, timer } = payload;
+      state.cardTimers.push({ id, timer });
+    },
     setCards(state, { payload }: PayloadAction<ICard[]>) {
       state.cards = payload;
     },
@@ -45,22 +54,60 @@ const cardSlice = createSlice({
 export const thunkShowCard =
   (id: number): ThunkAction<void, RootState, unknown, AnyAction> =>
   (dispatch, getState) => {
-    let cardTimers = [...getState().cardState.cardTimers];
+    const cardTimers = [...getState().cardState.cardTimers];
+    const cards = [...getState().cardState.cards];
+
     if (cardTimers.length >= 2) return;
+
     if (cardTimers.length === 1) {
-      const { id: firstCardId } = cardTimers[0];
+      const [{ id: firstCardId }] = cardTimers;
       const secondCardId = id;
+
+      if (
+        cards.find((card) => card.id === firstCardId)?.text ===
+        cards.find((card) => card.id === secondCardId)?.text
+      ) {
+        dispatch(deleteCard(firstCardId));
+        dispatch(deleteTimer(firstCardId));
+        dispatch(deleteCard(secondCardId));
+        dispatch(deleteTimer(secondCardId));
+        return;
+      }
+
       //   We need these to prevent the second card from hiding immediately
-      const timer1 = setTimeout(() => dispatch(hideCard(firstCardId)), 500);
-      const timer2 = setTimeout(() => dispatch(hideCard(secondCardId)), 500);
+      const timer1 = setTimeout(() => {
+        dispatch(hideCard(firstCardId));
+        dispatch(deleteTimer(firstCardId));
+      }, 500);
+
       dispatch(updateTimer({ id: firstCardId, timer: timer1 }));
-      dispatch(showCard({ id: secondCardId, timer: timer2 }));
+
+      dispatch(showCard(secondCardId));
+
+      const timer2 = setTimeout(() => {
+        dispatch(hideCard(secondCardId));
+        dispatch(deleteTimer(secondCardId));
+      }, 500);
+
+      dispatch(addTimer({ id: secondCardId, timer: timer2 }));
+
       return;
     }
+
+    // Five-second delay before card is hidden
+    dispatch(showCard(id));
     const timer = setTimeout(() => dispatch(hideCard(id)), 5000);
-    dispatch(showCard({ id, timer }));
+    dispatch(addTimer({ id, timer }));
   };
 
-export const { showCard, hideCard, setCards, updateTimer } = cardSlice.actions;
+export const {
+  showCard,
+  hideCard,
+  setCards,
+  updateTimer,
+  deleteCard,
+  deleteTimer,
+  addTimer,
+} = cardSlice.actions;
 
 export default cardSlice.reducer;
