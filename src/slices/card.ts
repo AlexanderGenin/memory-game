@@ -65,7 +65,8 @@ export const thunkShowCard =
 
       if (
         cards.find((card) => card.id === firstCardId)?.text ===
-        cards.find((card) => card.id === secondCardId)?.text
+          cards.find((card) => card.id === secondCardId)?.text &&
+        firstCardId !== secondCardId
       ) {
         dispatch(deleteCard(firstCardId));
         dispatch(deleteTimer(firstCardId));
