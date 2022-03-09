@@ -8,7 +8,7 @@ export default function App() {
   const { cards } = useSelector((state: RootState) => state.cardState);
   const remainedCards = cards.filter((card) => !card.isDeleted);
 
-  let timer = 180,
+  let timer = 90,
     minutes: number | string,
     seconds: number | string;
 
@@ -23,14 +23,10 @@ export default function App() {
       setTime(minutes + ":" + seconds);
 
       if (--timer < 0) {
-        alert("Time is up!");
+        alert("Time is up");
         clearInterval(mainTimer);
         return;
       }
-
-      return () => {
-        clearInterval(mainTimer);
-      };
     }, 1000);
   }, []);
 
